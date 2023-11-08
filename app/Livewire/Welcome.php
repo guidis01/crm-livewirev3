@@ -8,6 +8,10 @@ class Welcome extends Component
 {
     public function render()
     {
-        return view('livewire.welcome');
+        return <<<'HTML'
+            <div>
+                Hello :)
+            <div>
+        HTML;
     }
 }
