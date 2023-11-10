@@ -5,6 +5,5 @@ use App\Livewire\Welcome;
 use Illuminate\Support\Facades\{Auth, Route};
 
 Route::get('/', Welcome::class);
-Route::get('/home', Welcome::class)->name('home');
 Route::get('/register', Register::class)->name('auth.register');
 Route::get('/logout', fn () => Auth::logout());
