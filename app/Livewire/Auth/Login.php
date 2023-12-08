@@ -9,13 +9,14 @@ use Livewire\Component;
 
 class Login extends Component
 {
-    public ?string $email;
+    public ?string $email = null;
 
-    public ?string $password;
+    public ?string $password = null;
 
     public function render(): View
     {
-        return view('livewire.auth.login');
+        return view('livewire.auth.login')
+            ->layout('components.layouts.guest');
     }
 
     public function tryToLogin(): void
