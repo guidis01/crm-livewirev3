@@ -2,7 +2,9 @@
 
 use App\Livewire\Auth\Register;
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
 
 it('should render the component', function () {
@@ -56,3 +58,18 @@ test('validation rules', function ($f) {
     'email::unique'      => (object)['field' => 'email', 'value' => 'john@doe.com', 'rule' => 'unique', 'aField' => 'email_confirmation', 'aValue' => 'john@doe.com'],
     'password::required' => (object)['field' => 'password', 'value' => '', 'rule' => 'required'],
 ]);
+
+it('should send a notification welcoming a new user', function () {
+    Notification::fake();
+
+    Livewire::test(Register::class)
+        ->set('name', 'John Doe')
+        ->set('email', 'john@doe.com')
+        ->set('email_confirmation', 'john@doe.com')
+        ->set('password', 'password')
+        ->call('submit');
+
+    $user = User::whereEmail('john@doe.com')->first();
+
+    Notification::assertSentTo($user, WelcomeNotification::class);
+});
