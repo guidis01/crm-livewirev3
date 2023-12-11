@@ -9,9 +9,9 @@ class Welcome extends Component
     public function render()
     {
         return <<<'HTML'
-            <div>
-                Hello :)
-            <div>
+        <div>
+            Hello :)
+        </div>
         HTML;
     }
 }
