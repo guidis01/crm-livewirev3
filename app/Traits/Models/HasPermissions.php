@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Traits\Models;
 
+use App\Models\{App\Enum\Can, Permission};
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Cache;
 
@@ -12,9 +13,9 @@ trait HasPermissions
         return $this->belongsToMany(Permission::class);
     }
 
-    public function givePermissionTo(Can|string $key): void
+    public function givePermissionTo(\App\Enum\Can|string $key): void
     {
-        $pKey = $key instanceof Can ? $key->value : $key;
+        $pKey = $key instanceof \App\Enum\Can ? $key->value : $key;
 
         $this->permissions()->firstOrCreate(['key' => $pKey]);
 
@@ -25,9 +26,9 @@ trait HasPermissions
         );
     }
 
-    public function hasPermissionTo(Can|string $key): bool
+    public function hasPermissionTo(\App\Enum\Can|string $key): bool
     {
-        $pKey = $key instanceof Can ? $key->value : $key;
+        $pKey = $key instanceof \App\Enum\Can ? $key->value : $key;
 
         /** var Collection $permissions */
         $permissions = Cache::get($this->getPermissionCacheKey(), $this->permissions);
