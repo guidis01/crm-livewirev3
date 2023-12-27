@@ -2,7 +2,6 @@
 
 use App\Livewire\Auth\Password\Recovery;
 use App\Models\User;
-use App\Notifications\PasswordRecoveryNotification;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
 
@@ -26,7 +25,7 @@ it('should be able to request for a password recovery sending a notification to 
         ->call('startPasswordRecovery')
         ->assertSee('You will receive an email with password recovery link!');
 
-    Notification::assertSentTo($user, PasswordRecoveryNotification::class);
+    Notification::assertSentTo($user, \Illuminate\Auth\Notifications\ResetPassword::class);
 
 });
 
@@ -40,3 +39,15 @@ test('testing email property', function ($value, $rule) {
     'required' => ['value' => '', 'rule' => 'required'],
     'email'    => ['value' => 'any email', 'rule' => 'email'],
 ]);
+
+test('needs to create a token when requesting for a password recovery', function () {
+    /* @var User $user*/
+    $user = User::factory()->create();
+
+    Livewire::test(Recovery::class)
+        ->set('email', $user->email)
+        ->call('startPasswordRecovery');
+
+    \Pest\Laravel\assertDatabaseCount('password_reset_tokens', 1);
+    \Pest\Laravel\assertDatabaseHas('password_reset_tokens', ['email' => $user->email]);
+});
