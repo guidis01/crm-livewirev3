@@ -1,10 +1,19 @@
 <?php
 
-function obfuscate_email(string $email): string
+function obfuscate_email(?string $email = null): string
 {
+    if (!$email) {
+        return '';
+    }
+
     $split = explode('@', $email);
 
-    $firstPart       = $split[0];
+    if (sizeof($split) != 2) {
+        return '';
+    }
+
+    $firstPart = $split[0];
+
     $qty             = (int) floor(strlen($firstPart) * 0.75);
     $remaining       = strlen($firstPart) - $qty;
     $maskedFirstPart = substr($firstPart, 0, $remaining) . str_repeat('*', $qty);
