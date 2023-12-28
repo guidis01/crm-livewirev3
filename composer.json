@@ -17,6 +17,7 @@
         "robsontenorio/mary": "^0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.9",
         "fakerphp/faker": "^1.9.1",
         "laradumps/laradumps": "^2.3",
         "laravel/pint": "^1.0",
