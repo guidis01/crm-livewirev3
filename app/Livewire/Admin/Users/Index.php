@@ -20,9 +20,12 @@ class Index extends Component
 
     public array $search_permissions = [];
 
+    public Collection $permissionsToSearch;
+
     public function mount(): void
     {
         $this->authorize(Can::BE_AN_ADMIN->value);
+        $this->filterPermissions();
     }
 
     public function render(): View
@@ -68,9 +71,11 @@ class Index extends Component
         ];
     }
 
-    #[Computed]
-    public function permissions(): Collection
+    public function filterPermissions(?string $value = null): void
     {
-        return Permission::all();
+        $this->permissionsToSearch = Permission::query()
+           ->when($value, fn (Builder $q) => $q->where('key', 'like', "%$value%"))
+           ->orderBy('key')
+           ->get();
     }
 }
