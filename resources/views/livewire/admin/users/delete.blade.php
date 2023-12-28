@@ -1,3 +1,9 @@
 <div>
-    {{-- The best athlete wants his opponent at his best. --}}
+    <button wire:click="$set('modal', true)">
+
+    </button>
+
+    @if($modal)
+
+    @endif
 </div>
