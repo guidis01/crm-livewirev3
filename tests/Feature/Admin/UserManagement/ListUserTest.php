@@ -53,3 +53,32 @@ test('check the table format', function () {
             ]
         );
 });
+
+it('should be able to filter by name and email', function () {
+    $admin = User::factory()->admin()->create(['name' => 'John Doe', 'email' => 'john@globalhitss.com.br']);
+    $jane  = User::factory()->create(['name' => 'Jane Doe', 'email' => 'jani@globalhitss.com.br']);
+
+    actingAs($admin);
+
+    Livewire::test('admin.users.index')
+        ->assertSet('users', function ($users) {
+            expect($users)->toHaveCount(2);
+
+            return true;
+        })
+        ->set('search', 'jan')
+        ->assertSet('users', function ($users) {
+            expect($users)
+                ->toHaveCount(1)
+                ->first()->name->toBe('Jane Doe');
+
+            return true;
+        })->set('search', 'jani')
+        ->assertSet('users', function ($users) {
+            expect($users)
+                ->toHaveCount(1)
+                ->first()->name->toBe('Jane Doe');
+
+            return true;
+        });
+});
