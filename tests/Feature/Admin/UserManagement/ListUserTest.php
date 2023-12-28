@@ -128,3 +128,29 @@ it('should be able to list deleted users', function () {
             return true;
         });
 });
+
+it('should be able to sort by name', function () {
+    $admin = User::factory()->admin()->create(['name' => 'John Doe', 'email' => 'john@globalhitss.com.br']);
+    $jane  = User::factory()->withPermission(Can::TESTING)->create(['name' => 'Jane Doe', 'email' => 'jani@globalhitss.com.br']);
+
+    actingAs($admin);
+
+    Livewire::test('admin.users.index')
+        ->set('sortDirection', 'asc')
+        ->set('sortColumnBy', 'name')
+        ->assertSet('users', function ($users) {
+            expect($users)
+                ->first()->name->toBe('Jane Doe')
+                ->and($users)->last()->name->toBe('John Doe');
+
+            return true;
+        })->set('sortDirection', 'desc')
+        ->set('sortColumnBy', 'name')
+        ->assertSet('users', function ($users) {
+            expect($users)
+                ->first()->name->toBe('John Doe')
+                ->and($users)->last()->name->toBe('Jane Doe');
+
+            return true;
+        });
+});
