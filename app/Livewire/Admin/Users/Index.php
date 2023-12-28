@@ -3,7 +3,7 @@
 namespace App\Livewire\Admin\Users;
 
 use App\Enum\Can;
-use App\Models\User;
+use App\Models\{Permission, User};
 use Illuminate\Database\Eloquent\{Builder, Collection};
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -17,6 +17,8 @@ use Livewire\Component;
 class Index extends Component
 {
     public ?string $search = null;
+
+    public array $search_permissions = [];
 
     public function mount(): void
     {
@@ -45,6 +47,12 @@ class Index extends Component
                         'like',
                         '%' . strtolower($this->search) . '%'
                     )
+            )->when(
+                $this->search_permissions,
+                fn (Builder $q) => $q
+                    ->whereHas('permissions', function ($query) {
+                        $query->whereIn('id', $this->search_permissions);
+                    })
             )
             ->get();
     }
@@ -58,5 +66,11 @@ class Index extends Component
             ['key' => 'email', 'label' => 'Email'],
             ['key' => 'permissions', 'label' => 'Permissions'],
         ];
+    }
+
+    #[Computed]
+    public function permissions(): Collection
+    {
+        return Permission::all();
     }
 }

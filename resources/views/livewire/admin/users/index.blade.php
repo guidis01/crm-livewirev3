@@ -1,6 +1,5 @@
 <div>
     <x-header title="Users" separator/>
-    
     <div class="mb-2 flex space-x-4">
         <div class="w-1/3">
             <x-input
@@ -10,7 +9,14 @@
                 wire:model.live="search"
             />
         </div>
+        <x-choices
+            :options="$this->permissions"
+            option-label="key"
+            wire:model.live="search_permissions"
+            compact
+        />
     </div>
+
 
     <x-table :headers="$this->headers" :rows="$this->users">
         @scope('cell_permissions', $user)
