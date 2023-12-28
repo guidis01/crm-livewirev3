@@ -19,6 +19,8 @@ class Index extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'tailwind';
+
     public ?string $search = null;
 
     public array $search_permissions = [];
