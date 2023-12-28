@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+@php use App\Enum\Can; @endphp
+    <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -32,6 +33,12 @@
                 <x-menu-item title="Wifi" icon="o-wifi" link="####"/>
                 <x-menu-item title="Archives" icon="o-archive-box" link="####"/>
             </x-menu-sub>
+
+            @can(Can::BE_AN_ADMIN->value)
+                <x-menu-sub title="Admin" icon="o-lock-closed">
+                    <x-menu-item title="Dashboard" icon="o-chart-bar-square" :link="route('admin.dashboard')"/>
+                </x-menu-sub>
+            @endcan
         </x-menu>
     </x-slot:sidebar>
 
