@@ -3,6 +3,7 @@
 use App\Enum\Can;
 use App\Livewire\Admin;
 use App\Models\{Permission, User};
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Livewire;
 
 use function Pest\Laravel\{actingAs, get};
@@ -150,6 +151,29 @@ it('should be able to sort by name', function () {
             expect($users)
                 ->first()->name->toBe('John Doe')
                 ->and($users)->last()->name->toBe('Jane Doe');
+
+            return true;
+        });
+});
+
+it('should be able to paginate the result', function () {
+    $admin = User::factory()->admin()->create(['name' => 'John Doe', 'email' => 'john@globalhitss.com.br']);
+    User::factory()->withPermission(Can::TESTING)->count(30)->create();
+
+    actingAs($admin);
+
+    Livewire::test('admin.users.index')
+        ->set('sortDirection', 'asc')
+        ->set('sortColumnBy', 'name')
+        ->assertSet('users', function (LengthAwarePaginator $users) {
+            expect($users)
+                ->toHaveCount(15);
+
+            return true;
+        })->set('perPage', 20)
+        ->assertSet('users', function (LengthAwarePaginator $users) {
+            expect($users)
+                ->toHaveCount(20);
 
             return true;
         });
