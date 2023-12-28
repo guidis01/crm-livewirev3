@@ -18,6 +18,14 @@
             searchable
             no-result-text="Nothing here"
         />
+
+        <x-checkbox
+            label="Show Deleted Users"
+            wire:model.live="search_trash"
+            class="checkbox-primary"
+            right tight
+        />
+
     </div>
 
 
@@ -29,7 +37,12 @@
         @endscope
 
         @scope('actions', $user)
-        <x-button icon="o-trash" wire:click="delete({{ $user->id }})" spinner class="btn-sm"/>
+        @unless($user->trashed())
+            <x-button icon="o-trash" wire:click="delete({{ $user->id }})" spinner class="btn-sm"/>
+        @else
+            <x-button icon="o-arrow-path-rounded-square" wire:click="restore({{ $user->id }})" spinner
+                      class="btn-sm btn-success btn-ghost"/>
+        @endunless
         @endscope
     </x-table>
 </div>
