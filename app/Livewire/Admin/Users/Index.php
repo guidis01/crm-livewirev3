@@ -9,7 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Livewire\Component;
+use Livewire\{Component, WithPagination};
 
 /**
  * @property-read Collection|User[] $users
@@ -17,6 +17,8 @@ use Livewire\Component;
  */
 class Index extends Component
 {
+    use WithPagination;
+
     public ?string $search = null;
 
     public array $search_permissions = [];
