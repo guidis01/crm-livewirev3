@@ -1,9 +1,8 @@
 <div>
-    <x-button icon="o-trash" @click="$wire.modal = true" spinner class="btn-sm"/>
 
     <x-modal wire:model="modal"
              title="Deletion Confirmation"
-             subtitle="You are deleting the user {{ $user->name }}"
+             subtitle="You are deleting the user {{ $user?->name }}"
              separator
     >
 

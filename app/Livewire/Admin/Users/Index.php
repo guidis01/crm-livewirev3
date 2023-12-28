@@ -107,4 +107,9 @@ class Index extends Component
         $this->sortColumnBy  = $column;
         $this->sortDirection = $direction;
     }
+
+    public function destroy(int $id): void
+    {
+        $this->dispatch('user::deletion', userId: $id)->to('admin.users.delete');
+    }
 }
