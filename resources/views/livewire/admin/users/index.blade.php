@@ -52,26 +52,37 @@
         @endscope
 
         @scope('actions', $user)
-        @can(\App\Enum\Can::BE_AN_ADMIN->value)
-            @unless($user->trashed())
-                @unless($user->is(auth()->user()))
+        <div class="flex items-center space-x-2">
+            <x-button
+                id="show-btn-{{ $user->id }}"
+                wire:key="show-btn-{{ $user->id }}"
+                icon="o-eye"
+                wire:click="showUser({{ $user->id }})"
+                spinner
+                class="btn-sm"
+            />
+
+            @can(\App\Enum\Can::BE_AN_ADMIN->value)
+                @unless($user->trashed())
+                    @unless($user->is(auth()->user()))
+                        <x-button
+                            id="delete-btn-{{ $user->id }}"
+                            wire:key="delete-btn-{{ $user->id }}"
+                            icon="o-trash"
+                            wire:click="destroy('{{ $user->id }}')"
+                            spinner class="btn-sm"
+                        />
+                    @endif
+                @else
                     <x-button
-                        id="delete-btn-{{ $user->id }}"
-                        wire:key="delete-btn-{{ $user->id }}"
-                        icon="o-trash"
-                        wire:click="destroy('{{ $user->id }}')"
-                        spinner class="btn-sm"
+                        icon="o-arrow-path-rounded-square"
+                        wire:click="restore({{ $user->id }})"
+                        spinner
+                        class="btn-sm btn-success btn-ghost"
                     />
-                @endif
-            @else
-                <x-button
-                    icon="o-arrow-path-rounded-square"
-                    wire:click="restore({{ $user->id }})"
-                    spinner
-                    class="btn-sm btn-success btn-ghost"
-                />
-            @endunless
-        @endcan
+                @endunless
+            @endcan
+        </div>
         @endscope
     </x-table>
 
