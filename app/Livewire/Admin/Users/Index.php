@@ -4,12 +4,12 @@ namespace App\Livewire\Admin\Users;
 
 use App\Enum\Can;
 use App\Models\{Permission, User};
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\{Builder, Collection};
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Livewire\{Component, WithPagination};
+use Livewire\{Attributes\On, Component, WithPagination};
 
 /**
  * @property-read Collection|User[] $users
@@ -18,8 +18,6 @@ use Livewire\{Component, WithPagination};
 class Index extends Component
 {
     use WithPagination;
-
-    protected $paginationTheme = 'tailwind';
 
     public ?string $search = null;
 
@@ -41,19 +39,23 @@ class Index extends Component
         $this->filterPermissions();
     }
 
-    public function updatedPerPage($value): void
-    {
-        $this->resetPage();
-    }
-
+    #[On('user::deleted')]
+    #[On('user::restored')]
     public function render(): View
     {
         return view('livewire.admin.users.index');
     }
 
+    public function updatedPerPage($value): void
+    {
+        $this->resetPage();
+    }
+
     #[Computed]
     public function users(): LengthAwarePaginator
     {
+        $this->validate(['search_permissions' => 'exists:permissions,id']);
+
         return User::query()
             ->with('permissions')
             ->when(
@@ -69,15 +71,16 @@ class Index extends Component
                         'like',
                         '%' . strtolower($this->search) . '%'
                     )
-            )->when(
+            )
+            ->when(
                 $this->search_permissions,
-                fn (Builder $q) => $q
-                    ->whereHas('permissions', function ($query) {
-                        $query->whereIn('id', $this->search_permissions);
-                    })
-            )->when(
+                fn (Builder $q) => $q->whereHas('permissions', function (Builder $query) {
+                    $query->whereIn('id', $this->search_permissions);
+                })
+            )
+            ->when(
                 $this->search_trash,
-                fn (Builder $q) => $q->onlyTrashed() /** @phpstan-ignore-line*/
+                fn (Builder $q) => $q->onlyTrashed()/** @phpstan-ignore-line */
             )
             ->orderBy($this->sortColumnBy, $this->sortDirection)
             ->paginate($this->perPage);
@@ -87,8 +90,8 @@ class Index extends Component
     public function headers(): array
     {
         return [
-            ['key' => 'id', 'label' => '#', 'sortColumnBy' => $this->sortColumnBy   , 'sortDirection' => $this->sortDirection],
-            ['key' => 'name', 'label' => 'Name', 'sortColumnBy' => $this->sortColumnBy  , 'sortDirection' => $this->sortDirection],
+            ['key' => 'id', 'label' => '#', 'sortColumnBy' => $this->sortColumnBy, 'sortDirection' => $this->sortDirection],
+            ['key' => 'name', 'label' => 'Name', 'sortColumnBy' => $this->sortColumnBy, 'sortDirection' => $this->sortDirection],
             ['key' => 'email', 'label' => 'Email', 'sortColumnBy' => $this->sortColumnBy, 'sortDirection' => $this->sortDirection],
             ['key' => 'permissions', 'label' => 'Permissions', 'sortColumnBy' => $this->sortColumnBy, 'sortDirection' => $this->sortDirection],
         ];
@@ -97,9 +100,9 @@ class Index extends Component
     public function filterPermissions(?string $value = null): void
     {
         $this->permissionsToSearch = Permission::query()
-           ->when($value, fn (Builder $q) => $q->where('key', 'like', "%$value%"))
-           ->orderBy('key')
-           ->get();
+            ->when($value, fn (Builder $q) => $q->where('key', 'like', "%$value%"))
+            ->orderBy('key')
+            ->get();
     }
 
     public function sortBy(string $column, string $direction): void
@@ -111,5 +114,10 @@ class Index extends Component
     public function destroy(int $id): void
     {
         $this->dispatch('user::deletion', userId: $id)->to('admin.users.delete');
+    }
+
+    public function restore(int $id): void
+    {
+        $this->dispatch('user::restoring', userId: $id)->to('admin.users.restore');
     }
 }
