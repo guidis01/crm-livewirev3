@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Users;
 
 use App\Models\User;
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Show extends Component
@@ -17,9 +18,10 @@ class Show extends Component
         return view('livewire.admin.users.show');
     }
 
-    public function loadUser(int $userId): void
+    #[On('user::show')]
+    public function loadUser(int $id): void
     {
-        $this->user  = User::withTrashed()->find($userId);
+        $this->user  = User::withTrashed()->find($id);
         $this->modal = true;
     }
 }
