@@ -64,8 +64,12 @@
                     />
                 @endif
             @else
-                <x-button icon="o-arrow-path-rounded-square" wire:click="restore({{ $user->id }})" spinner
-                          class="btn-sm btn-success btn-ghost"/>
+                <x-button
+                    icon="o-arrow-path-rounded-square"
+                    wire:click="restore({{ $user->id }})"
+                    spinner
+                    class="btn-sm btn-success btn-ghost"
+                />
             @endunless
         @endcan
         @endscope
@@ -74,4 +78,5 @@
     {{ $this->users->links(data: ['scrollTo' => false]) }}
 
     <livewire:admin.users.delete/>
+    <livewire:admin.users.restore/>
 </div>
