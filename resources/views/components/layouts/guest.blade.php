@@ -8,7 +8,9 @@
     @vite(['resources/css/app.css', 'resources/css/app.js'])
 </head>
 <body class="font-sans antialiased">
-<livewire:dev.login/>
+@if(!app()->environment('production'))
+    <x-devbar/>
+@endif
 
 <div
     class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900"
