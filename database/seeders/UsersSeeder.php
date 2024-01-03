@@ -14,7 +14,7 @@ class UsersSeeder extends Seeder
             ->withPermission(Can::BE_AN_ADMIN)
             ->create([
                 'name'  => 'Admin do CRM',
-                'email' => 'admin@crm.com',
+                'email' => 'admin@admin.com',
             ]);
 
         User::factory()->count(50)->create();
