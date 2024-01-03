@@ -9,9 +9,11 @@
 </head>
 <body class="min-h-screen font-sans antialiased">
 <x-toast/>
+@if(session('impersonate'))
+    <livewire:admin.users.stop-impersonate/>
+@endif
 <x-main full-width>
-
-
+    
     <x-slot:sidebar drawer="main-drawer" collapsible class="pt-3 bg-sky-800 text-white">
 
         <!-- Hidden when collapsed -->
@@ -49,11 +51,6 @@
 
     <!-- The `$slot` goes here -->
     <x-slot:content>
-
-        @if(session('impersonate'))
-            {{ __("You're impersonating :name, click here to stop the impersonation", ['name' => auth()->user()->name]) }}
-        @endif
-
         {{ $slot }}
     </x-slot:content>
 </x-main>
