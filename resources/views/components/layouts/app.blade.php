@@ -13,7 +13,9 @@
     <livewire:admin.users.stop-impersonate/>
 @endif
 
-<livewire:dev.login/>
+@if(!app()->environment('production'))
+    <x-devbar/>
+@endif
 <x-main full-width>
 
     <x-slot:sidebar drawer="main-drawer" collapsible class="pt-3 bg-sky-800 text-white">
