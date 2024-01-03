@@ -14,6 +14,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.1",
+        "owen-it/laravel-auditing": "^13.6",
         "robsontenorio/mary": "^0"
     },
     "require-dev": {
