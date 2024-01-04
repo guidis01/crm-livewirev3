@@ -11,7 +11,7 @@
                 </a>
                 <div>
                     <x-button label="Reset" type="reset"/>
-                    <x-button label="Login" class="btn-primary" type="submit" spinner="submit"/>
+                    <x-button label="Register" class="btn-primary" type="submit" spinner="submit"/>
                 </div>
             </div>
         </x-slot:actions>
