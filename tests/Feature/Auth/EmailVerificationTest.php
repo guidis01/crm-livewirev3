@@ -3,7 +3,8 @@
 use App\Listeners\Auth\CreateValidationCode;
 use App\Livewire\Auth\{EmailValidation, Register};
 use App\Models\User;
-use App\Notifications\ValidationCodeNotification;
+use App\Notifications\{ValidationCodeNotification, WelcomeNotification};
+use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\{Event, Notification};
 use Livewire\Livewire;
@@ -90,4 +91,25 @@ describe('validation page', function () {
         expect($user)->validation_code->not->toBe($oldCode);
         Notification::assertSentTo($user, ValidationCodeNotification::class);
     });
+
+    it('should update email_verified_at and delete the code if the code is valid', function () {
+        $user = User::factory()
+            ->withValidationCode()
+            ->create();
+
+        actingAs($user);
+
+        Livewire::test(EmailValidation::class)
+            ->set('code', $user->validation_code)
+            ->call('handle')
+            ->assertHasNoErrors()
+            ->assertRedirect(RouteServiceProvider::HOME);
+
+        expect($user)
+            ->email_verified_at->not->toBeNull()
+            ->validation_code->toBeNull();
+
+        Notification::assertSentTo($user, WelcomeNotification::class);
+    });
+
 });
