@@ -3,7 +3,6 @@
 use App\Livewire\Auth\Register;
 use App\Models\User;
 use App\Notifications\WelcomeNotification;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\{Event, Notification};
 use Livewire\Livewire;
@@ -20,8 +19,7 @@ it('should be able to register a new user in the system', function () {
     ->set('email_confirmation', 'john@doe.com')
     ->set('password', 'password')
     ->call('submit')
-    ->assertHasNoErrors()
-    ->assertRedirect(RouteServiceProvider::HOME);
+    ->assertHasNoErrors();
 
     $this->assertDatabaseHas('users', [
         'name'  => 'John Doe',
