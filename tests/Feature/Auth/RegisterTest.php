@@ -4,7 +4,8 @@ use App\Livewire\Auth\Register;
 use App\Models\User;
 use App\Notifications\WelcomeNotification;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\{Event, Notification};
 use Livewire\Livewire;
 
 it('should render the component', function () {
@@ -72,4 +73,17 @@ it('should send a notification welcoming a new user', function () {
     $user = User::whereEmail('john@doe.com')->first();
 
     Notification::assertSentTo($user, WelcomeNotification::class);
+});
+
+it('should dispatch Registered event', function () {
+    Event::fake();
+
+    Livewire::test(Register::class)
+    ->set('name', 'John Doe')
+    ->set('email', 'john@doe.com')
+    ->set('email_confirmation', 'john@doe.com')
+    ->set('password', 'password')
+    ->call('submit');
+
+    Event::assertDispatched(Registered::class);
 });

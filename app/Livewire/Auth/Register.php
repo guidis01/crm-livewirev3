@@ -5,7 +5,9 @@ namespace App\Livewire\Auth;
 use App\Models\User;
 use App\Notifications\WelcomeNotification;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Event;
 use Livewire\Attributes\{Layout, Rule};
 use Livewire\Component;
 
@@ -41,6 +43,7 @@ class Register extends Component
 
         $user->notify(new WelcomeNotification());
 
+        Event::dispatch(new Registered($user));
         $this->redirect(RouteServiceProvider::HOME);
     }
 }
