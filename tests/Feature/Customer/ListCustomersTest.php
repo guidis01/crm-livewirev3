@@ -1,7 +1,8 @@
 <?php
 
 use App\Enum\Can;
-use App\Models\{Permission, User};
+use App\Livewire\Customers;
+use App\Models\{Customer, Permission, User};
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Livewire;
 
@@ -16,20 +17,20 @@ it('should be able to access the route customers', function () {
 });
 
 it("let's create a livewire component to list all customers in the page", function () {
-    actingAs(User::factory()->admin()->create());
-    $customers = User::factory()->count(10)->create();
+    actingAs(User::factory()->create());
+    $customers = Customer::factory()->count(10)->create();
 
     $lw = Livewire::test(Customers\Index::class);
 
     $lw->assertSet('customers', function ($customers) {
         expect($customers)
-            ->toHaveCount(11);
+            ->toHaveCount(10);
 
         return true;
     });
 
-    foreach ($customers as $user) {
-        $lw->assertSee($user->name);
+    foreach ($customers as $customer) {
+        $lw->assertSee($customer->name);
     }
 
 });
