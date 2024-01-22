@@ -58,5 +58,6 @@ it('should send a notification to the user telling him that he no longer has acc
         ->set('user', $forDeletion)
         ->set('confirmation_confirmation', 'DART VADER')
         ->call('destroy');
+
     Notification::assertSentTo($forDeletion, UserDeletedNotification::class);
 });
