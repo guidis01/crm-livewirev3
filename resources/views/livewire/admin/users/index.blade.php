@@ -32,7 +32,7 @@
         />
     </div>
 
-    <x-table :headers="$this->headers" :rows="$this->users">
+    <x-table :headers="$this->headers" :rows="$this->items">
         @scope('header_id', $header)
         <x-table.th :$header name="id"/>
         @endscope
@@ -94,7 +94,7 @@
         @endscope
     </x-table>
 
-    {{ $this->users->links(data: ['scrollTo' => false]) }}
+    {{ $this->items->links(data: ['scrollTo' => false]) }}
 
     <livewire:admin.users.delete/>
     <livewire:admin.users.restore/>
