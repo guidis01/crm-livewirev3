@@ -1,20 +1,23 @@
 <?php
 
+use App\Livewire\Dev\BranchEnv;
 use App\Models\User;
+use Illuminate\Support\Facades\Process;
+use Livewire\Livewire;
 
 use function Pest\Laravel\{actingAs, get};
 
-//it('should show the current branch in the page', function () {
-//    Process::fake([
-//        'git branch --show-current' => Process::result('luamaria'),
-//    ]);
-//
-//    Livewire::test(BranchEnv::class)
-//        ->assertSet('branch', 'luamaria')
-//        ->assertSee('luamaria');
-//
-//    Process::assertRan('git branch --show-current');
-//});
+it('should show the current branch in the page', function () {
+    Process::fake([
+        'git branch --show-current' => Process::result('luamaria'),
+    ]);
+
+    Livewire::test(BranchEnv::class)
+        ->assertSet('branch', 'luamaria')
+        ->assertSee('luamaria');
+
+    Process::assertRan('git branch --show-current');
+});
 
 it('should not load the livewire component on production environment', function () {
     $user = User::factory()->create();
